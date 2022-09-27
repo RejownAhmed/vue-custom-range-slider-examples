@@ -26,63 +26,63 @@
     </div>
   </template>
   <script setup>
-    import { ref } from 'vue'
-    
-    const props = defineProps(
-        {
-            modelValue: {
-                type: Number,
-                default: 0
-            },
-            alwaysShowThumb: {
-                type: Boolean,
-                default: false
-            },
-            noPreviewBar: {
-                type: Boolean,
-                default: false
-            },
-            noProgressBar: {
-                type: Boolean,
-                default: false
-            },
-            noThumb: {
-                type: Boolean,
-                default: false
-            },
-            expandOnHover: {
-                type: Boolean,
-                default: false
-            },
-            rangeContainerHeight: {
-                type: String,
-                default: '7px'
-            },
-            rangeHeight: {
-                type: String,
-                default: '3px'
-            },
-            thumbHeight: {
-                type: String,
-                default: '200%'
-            },
-            rangeBgColor: {
-                type: String,
-                default: 'rgba(100, 100, 100, .5)'
-            },
-            thumbColor: {
-                type: String,
-                default: 'red'
-            },
-            previewColor: {
-                type: String,
-                default: 'rgb(150, 150, 150)'
-            },
-            progressColor: {
-                type: String,
-                default: 'red'
-            },
-        }
+        import { ref } from 'vue'
+        
+        const props = defineProps(
+            {
+                modelValue: {
+                    type: Number,
+                    default: 0
+                },
+                alwaysShowThumb: {
+                    type: Boolean,
+                    default: false
+                },
+                noPreviewBar: {
+                    type: Boolean,
+                    default: false
+                },
+                noProgressBar: {
+                    type: Boolean,
+                    default: false
+                },
+                noThumb: {
+                    type: Boolean,
+                    default: false
+                },
+                expandOnHover: {
+                    type: Boolean,
+                    default: false
+                },
+                rangeContainerHeight: {
+                    type: String,
+                    default: '7px'
+                },
+                rangeHeight: {
+                    type: String,
+                    default: '3px'
+                },
+                thumbHeight: {
+                    type: String,
+                    default: '200%'
+                },
+                rangeBgColor: {
+                    type: String,
+                    default: 'rgba(100, 100, 100, .5)'
+                },
+                thumbColor: {
+                    type: String,
+                    default: 'red'
+                },
+                previewColor: {
+                    type: String,
+                    default: 'rgb(150, 150, 150)'
+                },
+                progressColor: {
+                    type: String,
+                    default: 'red'
+                },
+            }
     )
     const emit  = defineEmits(['update:modelValue'])//emit data to v-model
     const isScrubbing = ref(false)//Not clicked/dragged
@@ -103,7 +103,15 @@
             emit('update:modelValue', percent)//Emit the current position to v-model directive
         }
     }
-  
+
+    defineExpose({ progressPosition }) //Expose the porgressPosition Ref
+    /*
+    * This is a must needed since sometimes we'll need to update 
+    * the position from it's parent
+    * without exposing it we cannot update the porgressPosition when
+    * the audio/video plays
+    * See the video player example created with it for more details
+    */
   </script>
   <style lang="scss" scoped> 
     .range-container {
