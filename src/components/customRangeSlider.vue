@@ -176,7 +176,6 @@
                 bottom: 0;
                 height: 100%;
                 right: calc(100% - var(--buffer-position) * 100%);
-                // right: 40%;
                 background-color: var(--buffer-color);
             }
             .thumb-indicator{
