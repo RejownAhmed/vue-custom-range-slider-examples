@@ -1,92 +1,71 @@
-<template>
-    <div 
-        class="range-container"
-        :class="props.expandOnHover ? 'expandOnHover' : ''"
-        :style="{   
-            '--progress-position': progressPosition, 
-            '--range-container-height': props.rangeContainerHeight, 
-            '--range-height': props.rangeHeight, 
-            '--thumb-height': props.thumbHeight, 
-            '--range-bg-color': props.rangeBgColor, 
-            '--thumb-color': props.thumbColor, 
-            '--preview-color': props.previewColor, 
-            '--progress-color': props.progressColor, 
-        }"
-        @mousemove="handlerangeUpdate"
-        @mousedown="toggleScrubbing"
-        @mouseup="isScrubbing = false"
-        @mouseleave="isScrubbing = false">
-
-        <div class="range">
-            <span v-if="!props.noPreviewBar" class="preview"></span>
-            <span v-if="!props.noProgressBar" class="progress"></span>
-            <slot></slot>
-            <span v-if="!props.noThumb" class="thumb-indicator" :style="props.alwaysShowThumb ? {display: 'block'} : ''"></span>
-        </div>
-    </div>
-  </template>
   <script setup>
-        import { ref } from 'vue'
+    import { ref } from 'vue'
         
-        const props = defineProps(
-            {
-                modelValue: {
-                    type: Number,
-                    default: 0
-                },
-                alwaysShowThumb: {
-                    type: Boolean,
-                    default: false
-                },
-                noPreviewBar: {
-                    type: Boolean,
-                    default: false
-                },
-                noProgressBar: {
-                    type: Boolean,
-                    default: false
-                },
-                noThumb: {
-                    type: Boolean,
-                    default: false
-                },
-                expandOnHover: {
-                    type: Boolean,
-                    default: false
-                },
-                rangeContainerHeight: {
-                    type: String,
-                    default: '7px'
-                },
-                rangeHeight: {
-                    type: String,
-                    default: '3px'
-                },
-                thumbHeight: {
-                    type: String,
-                    default: '200%'
-                },
-                rangeBgColor: {
-                    type: String,
-                    default: 'rgba(100, 100, 100, .5)'
-                },
-                thumbColor: {
-                    type: String,
-                    default: 'red'
-                },
-                previewColor: {
-                    type: String,
-                    default: 'rgb(150, 150, 150)'
-                },
-                progressColor: {
-                    type: String,
-                    default: 'red'
-                },
-            }
+    const props = defineProps(
+        {
+            modelValue: {
+                type: Number,
+                default: 0
+            },
+            alwaysShowThumb: {
+                type: Boolean,
+                default: false
+            },
+            showBuffer: {
+                type: Boolean,
+                default: true
+            },
+            noPreviewBar: {
+                type: Boolean,
+                default: false
+            },
+            noProgressBar: {
+                type: Boolean,
+                default: false
+            },
+            noThumb: {
+                type: Boolean,
+                default: false
+            },
+            expandOnHover: {
+                type: Boolean,
+                default: false
+            },
+            rangeContainerHeight: {
+                type: String,
+                default: '7px'
+            },
+            rangeHeight: {
+                type: String,
+                default: '3px'
+            },
+            thumbHeight: {
+                type: String,
+                default: '200%'
+            },
+            rangeBgColor: {
+                type: String,
+                default: 'rgba(100, 100, 100, .5)'
+            },
+            thumbColor: {
+                type: String,
+                default: 'red'
+            },
+            previewColor: {
+                type: String,
+                default: 'rgb(150, 150, 150)'
+            },
+            progressColor: {
+                type: String,
+                default: 'red'
+            },
+        }
     )
     const emit  = defineEmits(['update:modelValue'])//emit data to v-model
     const isScrubbing = ref(false)//Not clicked/dragged
-    const progressPosition = ref(props.modelValue)//setting it to modelValue gives us more flexibility over default positioning
+    //setting it to modelValue gives us more flexibility over default positioning
+    const progressPosition = ref(props.modelValue)
+    const bufferPosition = ref(0)//show how much buffered (If wish to)
 
     const toggleScrubbing = (e)=> {
         if( props.modelValue == null ) alert(msg.value)
@@ -104,7 +83,7 @@
         }
     }
 
-    defineExpose({ progressPosition }) //Expose the porgressPosition Ref
+    defineExpose({ progressPosition, bufferPosition }) //Expose the porgressPosition Ref
     /*
     * This is a must needed since sometimes we'll need to update 
     * the position from it's parent
@@ -112,7 +91,38 @@
     * the audio/video plays
     * See the video player example created with it for more details
     */
-  </script>
+</script>
+<template>
+
+    <div 
+        class="range-container"
+        :class="props.expandOnHover ? 'expandOnHover' : ''"
+        :style="{
+            '--buffer-position': bufferPosition,    
+            '--progress-position': progressPosition, 
+            '--range-container-height': props.rangeContainerHeight, 
+            '--range-height': props.rangeHeight, 
+            '--thumb-height': props.thumbHeight, 
+            '--range-bg-color': props.rangeBgColor, 
+            '--thumb-color': props.thumbColor, 
+            '--preview-color': props.previewColor, 
+            '--progress-color': props.progressColor, 
+        }"
+        @mousemove="handlerangeUpdate"
+        @mousedown="toggleScrubbing"
+        @mouseup="isScrubbing = false"
+        @mouseleave="isScrubbing = false">
+
+        <div class="range">
+            <span v-if="!props.noPreviewBar" class="preview"></span>
+            <span v-if="!props.noProgressBar" class="progress"></span>
+            <span v-if="props.showBuffer" class="buffered"></span>
+            <slot></slot>
+            <span v-if="!props.noThumb" class="thumb-indicator" :style="props.alwaysShowThumb ? {display: 'block'} : ''"></span>
+        </div>
+    </div>
+  </template>
+
   <style lang="scss" scoped> 
     .range-container {
         --range-container-height: 7px;
@@ -121,8 +131,9 @@
         --thumb-height: 200%;
         --range-bg-color: rgba(100, 100, 100, .5);
         --thumb-color: red;
-        --preview-color: rgb(150, 150, 150);
-        --progress-color: red;
+        --preview-color: rgba(255,255,255,.5);
+        --progress-color: #f00;
+        --buffer-color: rgba(255,255,255,.4);
         &.expandOnHover{
             --hover-range-height: 100%;
         }
@@ -156,6 +167,17 @@
                 height: 100%;
                 right: calc(100% - var(--progress-position) * 100%);
                 background-color: var(--progress-color);
+            }
+            .buffered {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                height: 100%;
+                right: calc(100% - var(--buffer-position) * 100%);
+                // right: 40%;
+                background-color: var(--buffer-color);
             }
             .thumb-indicator{
                 display: none;
