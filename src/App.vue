@@ -69,7 +69,7 @@ const defaultPosition = ref(0.4)
 </div>
 <div>
   <p>Example 8: No Progress Bar. Drag or click any parts to see it.</p>
-  <span style='width: 40%'>
+  <span>
         <customRangeSlider 
           no-progress-bar
           expand-on-hover
@@ -79,7 +79,7 @@ const defaultPosition = ref(0.4)
 </div>
 <div>
   <p>Example 9: Customizig Colors and other things.</p>
-  <span style='width: 40%'>
+  <span>
         <customRangeSlider 
           thumb-height="500%"
           range-height="10px"
@@ -93,4 +93,27 @@ const defaultPosition = ref(0.4)
         </customRangeSlider>
   </span>
 </div>
+<div>
+  <p>Example 10: Showing Custom text Inside. Drag/Click to see</p>
+  <span>
+        <customRangeSlider 
+          thumb-height="500%"
+          range-height="20px"
+          range-container-height="20px"
+          show-custom-text
+          no-thumb><!--Height set to bigger to show properly-->
+        </customRangeSlider>
+  </span>
+</div>
 </template>
+<style>
+  body{
+    padding: 0px 20px
+  }
+  div{
+    margin-bottom: 30px;
+  }
+  p{
+    margin-bottom: 50px
+  }
+</style>
